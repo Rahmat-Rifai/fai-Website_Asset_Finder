@@ -5,15 +5,17 @@ import type { CheerioAPI } from "cheerio";
  * normalised to uppercase hex (#RRGGBB).
  */
 export function extractColors(
-  $: CheerioAPI,
+  $: CheerioAPI | null,
   cssTexts: string[] = [],
 ): string[] {
-  const css = [
+  const styleTexts = $ ? [
     ...cssTexts,
     ...$("style")
       .map((_, el) => $(el).text())
       .get(),
-  ].join("\n");
+  ].join("\n") : cssTexts.join("\n");
+
+  const css = styleTexts;
 
   const rawColors =
     css.match(

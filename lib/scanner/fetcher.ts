@@ -8,6 +8,88 @@ export interface FetchResult {
   status: number;
 }
 
+export async function fetchImageBuffer(
+  rawUrl: string,
+  opts?: { timeoutMs?: number; maxBytes?: number; maxRedirects?: number },
+): Promise<Buffer | null> {
+  const timeout = opts?.timeoutMs ?? 10_000;
+  const maxBytes = opts?.maxBytes ?? 5 * 1024 * 1024; // 5MB cap
+  const maxRedirects = opts?.maxRedirects ?? 3;
+
+  let url: URL;
+  try {
+    url = validateAndNormaliseUrl(rawUrl);
+  } catch {
+    return null;
+  }
+
+  for (let hop = 0; hop <= maxRedirects; hop++) {
+    try {
+      await validateUrlSsrf(url);
+    } catch {
+      return null;
+    }
+
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        method: "GET",
+        redirect: "manual",
+        headers: {
+          "user-agent": UA,
+          accept: "image/*",
+        },
+        signal: AbortSignal.timeout(timeout),
+      });
+    } catch {
+      return null;
+    }
+
+    if (res.status >= 300 && res.status < 400) {
+      const location = res.headers.get("location");
+      if (!location) return null;
+      try {
+        url = new URL(location, url);
+      } catch {
+        return null;
+      }
+      if (!["http:", "https:"].includes(url.protocol)) return null;
+      continue;
+    }
+
+    if (!res.ok) return null;
+
+    const reader = res.body?.getReader();
+    if (!reader) return null;
+
+    const chunks: Uint8Array[] = [];
+    let received = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value) {
+          received += value.length;
+          if (received > maxBytes) {
+            reader.releaseLock();
+            return null;
+          }
+          chunks.push(value);
+        }
+      }
+    } catch {
+      reader.releaseLock();
+      return null;
+    } finally {
+      reader.releaseLock();
+    }
+
+    return Buffer.concat(chunks);
+  }
+
+  return null;
+}
+
 const UA = "AssetLensBot/1.0";
 const HTML_TYPES = ["text/html", "application/xhtml+xml"];
 

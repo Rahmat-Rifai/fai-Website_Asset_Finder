@@ -1,12 +1,14 @@
 import { load } from "cheerio";
 import type { ScanResult } from "@/types/scanner";
 import { validateAndNormaliseUrl } from "@/lib/security/url";
-import { fetchWebsite } from "@/lib/scanner/fetcher";
+import { fetchWebsite, fetchImageBuffer } from "@/lib/scanner/fetcher";
 import { parseHtml } from "@/lib/scanner/parser";
 import { buildAssets } from "@/lib/scanner/assets";
 import { extractMetadata } from "@/lib/scanner/metadata";
 import { extractColors } from "@/lib/scanner/colors";
 import { detectTechnologies } from "@/lib/scanner/technologies";
+import { analyzeExternalCss } from "@/lib/scanner/css";
+import { detectImageDimensions, isImageAsset } from "@/lib/scanner/dimensions";
 
 export interface ScanOptions {
   timeoutMs?: number;
@@ -33,7 +35,38 @@ export async function scanWebsite(
   const scriptSrcs = parsed.scripts.map((s) => s.url);
   const cssHrefs = parsed.stylesheets.map((s) => s.url);
   const technologies = detectTechnologies($, scriptSrcs, cssHrefs);
-  const colors = extractColors($);
+  let colors = extractColors($);
+
+  // Analyze external CSS for fonts, background images, and colors
+  const cssAssets = await analyzeExternalCss(finalUrl, cssHrefs);
+  colors.push(...cssAssets.colors);
+  colors = [...new Set(colors)]; // deduplicate
+
+  // Merge CSS assets into the main assets
+  const mergedFonts = [...assets.fonts, ...cssAssets.fonts];
+  const mergedImages = [...assets.images, ...cssAssets.images];
+
+  assets.fonts = mergedFonts;
+  assets.images = mergedImages;
+
+  // Optionally detect image dimensions for a limited number of images
+  // to avoid excessive requests.
+  const MAX_IMG_DIMS = 5;
+  const imgSamples = [...assets.images].slice(0, MAX_IMG_DIMS);
+  for (const img of imgSamples) {
+    if (isImageAsset(img)) {
+      const buffer = await fetchImageBuffer(img.url, {
+        timeoutMs: 8000,
+        maxBytes: 1 * 1024 * 1024, // 1 MB
+        maxRedirects: 3,
+      });
+      if (buffer) {
+        const updated = detectImageDimensions(img, buffer);
+        const index = assets.images.findIndex((a) => a.url === img.url);
+        if (index >= 0) assets.images[index] = updated;
+      }
+    }
+  }
 
   return {
     url: normalised.href,
