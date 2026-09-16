@@ -42,7 +42,7 @@ export function createRateLimiter(limit = 10, windowMs = 60 * 60 * 1000) {
 }
 
 /** Shared fallback limiter for one serverless process. */
-export const scanRateLimiter = createRateLimiter(10, 60 * 60 * 1000);
+export const scanRateLimiter = createRateLimiter(50, 60 * 60 * 1000);
 
 // Dynamically resolved only when KV env vars are present.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,7 +73,7 @@ async function getKvLimiter(): Promise<typeof kvLimiter> {
 
     kvLimiter = new Ratelimit({
       redis: new Redis({ url, token }),
-      limiter: Ratelimit.slidingWindow(10, "600 s"),
+      limiter: Ratelimit.slidingWindow(50, "600 s"),
       prefix: "assetlens:scan",
       analytics: false,
     });
@@ -91,7 +91,7 @@ export function resetRateLimiterForTests(): void {
 
 /**
  * Check the shared scan rate limit for a client key.
- * 10 scans / hour / IP. Falls back to in-memory only when KV is absent.
+ * 50 scans / hour / IP. Falls back to in-memory only when KV is absent.
  */
 export async function checkScanRateLimit(
   key: string,
