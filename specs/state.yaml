@@ -1,0 +1,39 @@
+project:
+  name: AssetLens
+  description: >-
+    Passive website asset & technology inspector. User enters a URL; the server
+    fetches static HTML and extracts assets, metadata, colors, fonts, and
+    technologies. No target JS execution, no DB, no paid AI API.
+  type: Web SaaS / Developer Tool
+  prd: "PRD.md — AssetLens.md"
+  initial_cost: "Rp0"
+  deploy_target: Vercel (free tier)
+  stack: Next.js (App Router) + TypeScript + Tailwind CSS + Lucide
+
+project_cycle:
+  current_phase: 7 # V1 COMPLETE
+  completed_phases: [1, 2, 3, 4, 5, 6, 7]
+  handoff:
+    next_skill: null
+    open_decisions:
+      - "DB strategy for V2 (scan history, saved scans)"
+    required_reading:
+      - "specs/release-plan.yaml"
+      - "specs/execution-status.yaml"
+
+active_epic: null
+git:
+  branch: main
+  commit: "235d0be"
+  tag: v0.2.0
+
+release:
+  last_tag: v0.2.0
+  production_url: "https://assetlens-djfhhf7r4-fai-s-projects4.vercel.app"
+  vercel_project: "assetlens"
+  note: >-
+    v0.2.0: Bulk URL scan (POST /api/scan/bulk, max 5 URLs, concurrency 3),
+    asset download proxy (GET /api/asset, SSRF-protected, 10 MB cap),
+    download buttons in AssetTable + ImageGrid, bulk mode UI in UrlInput +
+    ScanView. Fixes: og:image, <picture>, inline SVG detection; TS build error
+    (rate-limit.ts). 55 tests pass. Deployed to Vercel free tier (Rp0).

@@ -1,0 +1,40 @@
+vision: >-
+  AssetLens lets any developer, designer, or researcher inspect the assets,
+  metadata, colors, fonts, and technologies behind any public website from a
+  single URL — without opening DevTools, running paid AI APIs, or standing up
+  infrastructure.
+
+problem: >-
+  Finding a site's images, fonts, colors, Open Graph tags, and framework
+  fingerprints is possible in browser DevTools but slow and manual. AssetLens
+  consolidates all of it into one fast, structured interface.
+
+target_users:
+  - Web Developer
+  - Frontend Learner
+  - UI/UX Designer
+  - Web Researcher
+
+primary_goals:
+  - Easy-to-use website scanner driven only by a URL
+  - Structured asset + metadata display
+  - Heuristic technology detection (transparently labeled)
+  - Color palette extraction (normalised to HEX)
+  - Export scan results (JSON / CSV / TXT)
+  - No paid AI API, no database for MVP, deployable at Rp0
+
+principles:
+  - Fast
+  - Transparent (heuristics shown as heuristic)
+  - Privacy First (discard results after return)
+  - Secure by Default (all URLs treated as untrusted)
+  - No Unnecessary Infrastructure
+  - Progressive Complexity (start static; add dynamic later)
+
+non_goals:
+  - Penetration testing / vulnerability scanning
+  - Crawling entire websites
+  - Executing target JavaScript
+  - Bypassing auth / anti-bot (Cloudflare)
+  - Storing secrets / .env / credentials
+  - Mass scraping

@@ -1,0 +1,40 @@
+id: e03-asset-detection
+title: Asset Detection
+phase_group: "PRD Phase 3"
+bcp: 8
+depends_on: [e02]
+description: >-
+  Extract all asset categories from parsed HTML and dedupe by URL.
+
+stories:
+  - name: images-and-svg
+    description: >-
+      Detect images from <img src/srcset>, og:image, link[rel=icon];
+      classify SVG separately. Capture URL, name, mime, width/height (null
+      if absent).
+    verify:
+      - "vitest: fixture yields expected images + svg lists"
+
+  - name: stylesheets-and-scripts
+    description: >-
+      Detect <link rel=stylesheet> and <script src>; capture URL/name/type.
+    verify:
+      - "vitest: fixture yields stylesheets + scripts lists"
+
+  - name: fonts-and-icons
+    description: >-
+      Detect fonts via @font-face / link; icons via rel icon / shortcut /
+      apple-touch-icon.
+    verify:
+      - "vitest: fixture yields fonts + icons lists"
+
+  - name: media-and-dedupe
+    description: >-
+      Detect <video>/<audio>/<source>; remove duplicate assets by URL.
+    verify:
+      - "vitest: fixture yields videos + audio; duplicates removed"
+
+acceptance:
+  - "All 8 asset categories populated from fixture HTML"
+  - "Duplicate URLs removed across categories"
+  - "Asset shape matches types/scanner.ts Asset interface"

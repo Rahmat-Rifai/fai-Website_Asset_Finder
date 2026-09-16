@@ -1,0 +1,43 @@
+id: e01-project-setup
+title: Project Setup
+phase_group: "PRD Phase 1"
+bcp: 3
+depends_on: []
+description: >-
+  Scaffold the Next.js + TypeScript + Tailwind project, configure layout and
+  Tailwind, build the homepage shell and the URL input (no scanning yet).
+
+stories:
+  - name: init-nextjs
+    description: >-
+      Scaffold Next.js App Router with TypeScript (strict) and Tailwind CSS,
+      ESLint configured. Create .gitignore, .env.example, README.md.
+    verify:
+      - "test -f app/layout.tsx && test -f next.config.* "
+      - "npm run build exits 0"
+
+  - name: layout-and-theme
+    description: >-
+      Implement app/layout.tsx with metadata, globals.css with Tailwind,
+      minimal developer-tool visual style (dense, professional, no gradients).
+    verify:
+      - "npm run lint exits 0"
+
+  - name: homepage-shell
+    description: >-
+      Homepage with hero text "Inspect the assets behind any website." and a
+      URL input + Scan button (non-functional submit for now).
+    verify:
+      - "npm run build exits 0"
+      - "homepage contains the URL input and Scan button"
+
+  - name: ui-primitives
+    description: >-
+      Create components/ui/{Button,Card,Input,Badge}.tsx used by the scanner.
+    verify:
+      - "npm run lint exits 0"
+
+acceptance:
+  - "npm run build passes"
+  - "Homepage renders with input + Scan button"
+  - "Tailwind + TypeScript strict configured"

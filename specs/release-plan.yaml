@@ -1,0 +1,51 @@
+release:
+  name: AssetLens MVP
+  version: 0.1.0
+  target: Vercel (Rp0 free tier)
+  methodology: orchestrate-project Standard (6-phase loop)
+  source: "PRD.md — AssetLens.md (28-step build order, §45/§55)"
+
+# WSJF-ranked epic queue. Lower rank = build first.
+# BCP = Business Complexity Points (sizing in plan-release / plan-work).
+epics:
+  - id: e01-project-setup
+    wsjf_rank: 1
+    bcp: 3
+    phase_group: "PRD Phase 1"
+  - id: e02-scanner-core
+    wsjf_rank: 2
+    bcp: 8
+    phase_group: "PRD Phase 2"
+  - id: e03-asset-detection
+    wsjf_rank: 3
+    bcp: 8
+    phase_group: "PRD Phase 3"
+  - id: e04-analysis
+    wsjf_rank: 4
+    bcp: 8
+    phase_group: "PRD Phase 4"
+  - id: e05-result-ui
+    wsjf_rank: 5
+    bcp: 13
+    phase_group: "PRD Phase 5"
+  - id: e06-export
+    wsjf_rank: 6
+    bcp: 3
+    phase_group: "PRD Phase 6"
+  - id: e07-security-hardening
+    wsjf_rank: 7
+    bcp: 5
+    phase_group: "PRD Phase 7"
+  - id: e08-production-deploy
+    wsjf_rank: 8
+    bcp: 5
+    phase_group: "PRD Phase 8"
+
+verify_all:
+  - "npm run lint exits 0"
+  - "npm run build exits 0"
+  - "npm test exits 0 (unit + security + integration)"
+  - "POST /api/scan against a test URL returns success=true with
+    populated assets"
+  - "SSRF cases (127.0.0.1, 10.x, 169.254.169.254, redirect-to-private)
+    all blocked"

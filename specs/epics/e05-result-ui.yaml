@@ -1,0 +1,38 @@
+id: e05-result-ui
+title: Result Dashboard & UI
+phase_group: "PRD Phase 5"
+bcp: 13
+depends_on: [e04]
+description: >-
+  Wire the API route to assemble ScanResult and build the result dashboard
+  (overview, stats, table, image grid, metadata, tech, colors, search/filter).
+
+stories:
+  - name: scan-api-route
+    description: >-
+      app/api/scan/route.ts: POST {url} -> url/ssrf/fetch/parse/analyze ->
+      ScanResult JSON; error codes on failure (no stack traces).
+    verify:
+      - "vitest/integration: POST /api/scan returns success=true"
+      - "error path returns code + message, no stack trace"
+
+  - name: result-dashboard
+    description: >-
+      app/scan/page.tsx + ResultHeader, AssetStats, AssetTable, ImageGrid,
+      MetadataCard, TechStack, ColorPalette, ScanProgress.
+    verify:
+      - "npm run build exits 0"
+      - "dashboard shows stats, table, image grid, metadata, tech, colors"
+
+  - name: search-and-filter
+    description: >-
+      AssetTable + ImageGrid support search and category filter; copy URL /
+      open asset actions.
+    verify:
+      - "manual/interaction: filtering reduces visible rows"
+
+acceptance:
+  - "POST /api/scan returns full ScanResult"
+  - "Dashboard renders all sections from a real scan"
+  - "Search + filter work on asset lists"
+  - "Images that fail to load do not break the page"

@@ -1,0 +1,63 @@
+# Per-story execution status.
+# Gatekeeper: previous story must be done before next.
+# status: done | in_progress | pending
+
+epics:
+  e01-project-setup:
+    status: done
+    stories:
+      init-nextjs: done
+      layout-and-theme: done
+      homepage-shell: done
+      ui-primitives: done
+
+  e02-scanner-core:
+    status: done
+    stories:
+      url-validation: done
+      ssrf-defense: done
+      http-fetcher: done
+      html-parser: done
+
+  e03-asset-detection:
+    status: done
+    stories:
+      images-and-svg: done
+      stylesheets-and-scripts: done
+      fonts-and-icons: done
+      media-and-dedupe: done
+
+  e04-analysis:
+    status: done
+    stories:
+      metadata-og-twitter: done
+      color-extraction: done
+      technology-detection: done
+
+  e05-result-ui:
+    status: done
+    stories:
+      scan-api-route: done
+      result-dashboard: done
+      search-and-filter: done
+
+  e06-export:
+    status: done
+    stories:
+      export-modules: done
+      export-menu: done
+
+  e07-security-hardening:
+    status: done
+    stories:
+      rate-limiting: done
+      error-sanitisation: done
+      integration-tests: done
+
+  e08-production-deploy:
+    status: done
+    stories:
+      seo-and-a11y: done
+      responsive-pass: done
+      production-build: done
+      deploy-vercel: done

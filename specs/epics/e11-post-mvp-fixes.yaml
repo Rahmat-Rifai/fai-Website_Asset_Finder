@@ -1,0 +1,44 @@
+id: e11-post-mvp-fixes
+title: Post-MVP PRD Gap Fixes
+phase_group: "V1"
+bcp: 2
+depends_on: [e08]
+description: >-
+  Fixes for features that the PRD required but were missing from the initial
+  MVP implementation, plus a TypeScript build-blocking bug.
+
+stories:
+  - name: og-image-detection
+    description: >-
+      parser.ts now extracts <meta property="og:image" content="..."> and adds
+      each URL to the images asset list with name "og:image".
+    verify:
+      - "parser test: og:image URL appears in images array"
+
+  - name: picture-source-detection
+    description: >-
+      parser.ts now extracts <picture><source srcset="..."> entries and adds
+      them to the images asset list, applying the same srcset descriptor
+      parsing (drops 1x/2x/w suffixes).
+    verify:
+      - "parser test: <picture><source> URLs appear in images array"
+
+  - name: inline-svg-detection
+    description: >-
+      parser.ts now extracts inline <svg> elements (including id, width,
+      height attributes) and adds them to the svg asset list with
+      url format 'inline-svg#id' or 'inline-svg' when id absent.
+    verify:
+      - "parser test: inline SVG appears in svg array with id and dimensions"
+
+  - name: ratelimit-ts-fix
+    description: >-
+      lib/security/rate-limit.ts line 56: return type corrected from
+      Promise<kvLimiter> to Promise<typeof kvLimiter> (TS2749).
+    verify:
+      - "npm run build exits 0 (no TS errors)"
+
+acceptance:
+  - "og:image, <picture>, inline <svg> detected by parser"
+  - "npm run build succeeds with no TypeScript errors"
+  - "55 tests pass (up from 53)"

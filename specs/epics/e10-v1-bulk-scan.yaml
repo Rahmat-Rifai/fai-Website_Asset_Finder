@@ -1,0 +1,54 @@
+id: e10-v1-bulk-scan
+title: Bulk URL Scan
+phase_group: "V1"
+bcp: 5
+depends_on: [e08]
+description: >-
+  Multi-URL scanning in a single request. UI adds a Bulk Scan mode (textarea,
+  one URL per line, max 5). Each URL is rate-limited individually against the
+  shared 10/IP/hour cap. Runs with a concurrency of 3 to stay within Vercel
+  free-tier limits.
+
+stories:
+  - name: bulk-api-endpoint
+    description: >-
+      POST /api/scan/bulk accepts { urls: string[] } (max 5). Executes scans
+      with runWithConcurrency(urls, 3). Each scan individually rate-limited.
+      Returns { success, results: [{ url, success, data?, error? }] }.
+    verify:
+      - "POST with 2 valid URLs returns 2 results"
+      - "POST with >5 URLs truncated to 5"
+      - "POST with 0 URLs returns 400"
+      - "Rate limit exhausted URL returns { success: false, error: RATE_LIMITED }"
+
+  - name: bulk-url-input
+    description: >-
+      UrlInput adds Single/Bulk toggle. Bulk mode shows a textarea (max 5 URLs,
+      one per line or comma-separated). Stores parsed URLs in sessionStorage
+      and navigates to /scan?bulk=true.
+    verify:
+      - "Bulk toggle visible next to input"
+      - "Textarea appears when Bulk selected"
+      - "sessionStorage receives JSON array of trimmed URLs"
+
+  - name: bulk-results-view
+    description: >-
+      ScanView detects ?bulk=true, reads sessionStorage, calls /api/scan/bulk,
+      and renders a list of per-URL result cards. Successful cards show title,
+      asset counts, technologies, and a "View full results →" link. Failed cards
+      show error code + message.
+    verify:
+      - "Bulk results list renders per-URL cards"
+      - "Successful card shows asset counts + link to /scan?url=..."
+      - "Failed card shows error code and message"
+
+  - name: bulk-type
+    description: >-
+      types/scanner.ts exports BulkScanResult { url, success, data?, error? }.
+    verify:
+      - "BulkScanResult interface present in types/scanner.ts"
+
+acceptance:
+  - "POST /api/scan/bulk with valid URLs returns structured results"
+  - "Each URL in bulk respects 10/IP/hour rate limit individually"
+  - "Bulk UI mode functional with textarea + toggle"
