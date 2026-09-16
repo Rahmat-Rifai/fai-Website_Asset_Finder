@@ -29,11 +29,12 @@ git:
 
 release:
   last_tag: v0.2.0
-  production_url: "https://assetlens-djfhhf7r4-fai-s-projects4.vercel.app"
+  production_url: "https://assetlens-a6uhu060k-fai-s-projects4.vercel.app"
   vercel_project: "assetlens"
   note: >-
     v0.2.0: Bulk URL scan (POST /api/scan/bulk, max 5 URLs, concurrency 3),
     asset download proxy (GET /api/asset, SSRF-protected, 10 MB cap),
     download buttons in AssetTable + ImageGrid, bulk mode UI in UrlInput +
     ScanView. Fixes: og:image, <picture>, inline SVG detection; TS build error
-    (rate-limit.ts). 55 tests pass. Deployed to Vercel free tier (Rp0).
+    (rate-limit.ts); allowScripts for dependency install scripts.
+    55 tests pass. Deployed to Vercel free tier (Rp0).
