@@ -69,7 +69,7 @@ describe("POST /api/scan", () => {
     expect(json.error.code).toBe("SSRF_BLOCKED");
   });
 
-  it("rate limits the 11th scan from one IP in an hour", async () => {
+  it("rate limits the 51st scan from one IP in an hour", async () => {
     const html = "<html><head><title>r</title></head></html>";
     vi.stubGlobal(
       "fetch",
@@ -85,7 +85,7 @@ describe("POST /api/scan", () => {
 
     const ip = "9.9.9.9";
     let lastStatus = 0;
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < 51; i++) {
       const res = await POST(jsonRequest({ url: "https://example.com" }, ip));
       lastStatus = res.status;
     }

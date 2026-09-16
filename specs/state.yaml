@@ -28,17 +28,11 @@ git:
   tag: v0.2.0
 
 release:
-  last_tag: v0.2.1
+  last_tag: v0.2.2
   production_url: "https://assetlens-t5y2pblak-fai-s-projects4.vercel.app"
   vercel_project: "assetlens"
   note: >-
-    v0.2.1: V1 complete with:
-    - Bulk URL scan (POST /api/scan/bulk, max 5 URLs, concurrency 3)
-    - Asset download proxy (GET /api/asset, SSRF-protected, 10 MB cap)
-    - Download buttons in AssetTable + ImageGrid
-    - Bulk mode UI in UrlInput + ScanView
-    - Better technology detection (SvelteKit, Nuxt, Remix, Gatsby, Laravel, Django, Symfony, Rails, ASP.NET, Blazor, Bulma, Materialize, Foundation, Semantic UI, UIkit, Drupal, Joomla, Netlify, Firebase, AWS Amplify, Heroku, Surge.sh, Facebook Pixel, Hotjar, Mixpanel, Amplitude, Segment, CDN signatures)
-    - CSS asset analysis (fetch external stylesheets, extract @font-face, background-image URLs, colors)
-    - Image dimension detection (first 5 images via image-size library)
-    - Fixes: og:image, <picture>, inline SVG detection; TS build error (rate-limit.ts); allowScripts for dependency install scripts
-    55 tests pass. Deployed to Vercel free tier (Rp0).
+    v0.2.2: Landing page improvements (How it works, what we detect, mockup
+    example, use cases), bulk scan UX overhaul (client-side fan-out for
+    real-time per-URL progress, max 10 URLs validation, Export All JSON/CSV),
+    rate limit raised to 50/hour/IP. 55 tests pass. Deployed to Vercel free tier.
