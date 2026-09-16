@@ -2,6 +2,16 @@
   "name": "assetlens",
   "version": "0.1.0",
   "private": true,
+  "allowScripts": {
+    "@upstash/ratelimit@2.1.0": true,
+    "@upstash/redis@1.38.4": true,
+    "cheerio@1.2.0": true,
+    "next@16.3.5": true,
+    "react@19.2.8": true,
+    "react-dom@19.2.8": true,
+    "esbuild@0.28.2": true,
+    "unrs-resolver@1.12.2": true
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
