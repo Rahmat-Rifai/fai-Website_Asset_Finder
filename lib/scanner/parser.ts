@@ -173,6 +173,43 @@ export function parseHtml(html: string): ParsedAssets {
     if (url) assets.videos.push({ url, name: $(el).attr("title") ?? "video" });
   });
 
+  // Iframes (video embeds: YouTube, Vimeo, custom players)
+  const iframeRegex = /(youtube|youtu\.be|vimeo|player|embed|dailymotion|twitch|streamable|wistia)/i;
+  $("iframe[src]").each((_: number, el: Element) => {
+    const url = $(el).attr("src") ?? "";
+    if (url && iframeRegex.test(url)) {
+      assets.videos.push({ url, name: "iframe-embed" });
+    }
+  });
+
+  // JSON-LD VideoObject
+  $('script[type="application/ld+json"]').each((_: number, el: Element) => {
+    const raw = $(el).text();
+    try {
+      const data = JSON.parse(raw);
+      const items = Array.isArray(data) ? data : [data];
+      for (const item of items) {
+        const obj = item && typeof item === "object" ? item : null;
+        if (!obj) continue;
+        const types = Array.isArray(obj["@type"]) ? obj["@type"] : [obj["@type"]];
+        const isVideo = types.some(
+          (t: unknown) => typeof t === "string" && t.toLowerCase().includes("video"),
+        );
+        if (isVideo) {
+          const contentUrl = (obj as Record<string, string>)["contentUrl"];
+          const embedUrl = (obj as Record<string, string>)["embedUrl"];
+          const name = (obj as Record<string, string>)["name"] ?? "video";
+          if (contentUrl)
+            assets.videos.push({ url: contentUrl, name });
+          if (embedUrl)
+            assets.videos.push({ url: embedUrl, name: `${name} (embed)` });
+        }
+      }
+    } catch {
+      // Invalid JSON-LD, skip
+    }
+  });
+
   $("audio source, audio[src]").each((_: number, el: Element) => {
     const url = $(el).attr("src") ?? $(el).attr("data-src") ?? "";
     if (url) assets.audio.push({ url, name: $(el).attr("title") ?? "audio" });

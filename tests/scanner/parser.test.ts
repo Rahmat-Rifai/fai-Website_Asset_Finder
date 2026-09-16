@@ -94,6 +94,29 @@ describe("parseHtml", () => {
     expect(assets.svg[0].height).toBe(50);
   });
 
+  it("parses videos from iframe and JSON-LD", () => {
+    const html = `
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe>
+      <iframe src="https://player.vimeo.com/video/123456789"></iframe>
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        "name": "Sample Video",
+        "contentUrl": "https://example.com/video.mp4",
+        "embedUrl": "https://example.com/embed/123"
+      }
+      </script>
+    `;
+    const assets = parseHtml(html);
+    expect(assets.videos.length).toBe(4);
+    const urls = assets.videos.map((v) => v.url);
+    expect(urls).toContain("https://www.youtube.com/embed/dQw4w9WgXcQ");
+    expect(urls).toContain("https://player.vimeo.com/video/123456789");
+    expect(urls).toContain("https://example.com/video.mp4");
+    expect(urls).toContain("https://example.com/embed/123");
+  });
+
   it("throws PARSING_FAILED on empty HTML", () => {
     expect(() => parseHtml("")).toThrowError(
       expect.objectContaining({ code: "PARSING_FAILED" }),

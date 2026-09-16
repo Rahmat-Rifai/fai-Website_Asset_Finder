@@ -298,6 +298,55 @@ const PATTERNS: Pattern[] = [
       !!$('script[src*="analytics"]').length ||
       !!$("script").text().includes("analytics.load"),
   },
+  {
+    name: "JW Player",
+    category: "Video Player",
+    confidence: 0.9,
+    test: ($) =>
+      !!$('script[src*="jwplayer"]').length ||
+      !!$('script[src*="jw"]').length ||
+      !!$("[id*='jwplayer']").length ||
+      !!$("script").text().includes("jwplayer("),
+  },
+  {
+    name: "Video.js",
+    category: "Video Player",
+    confidence: 0.9,
+    test: ($) =>
+      !!$('link[href*="video.js"]').length ||
+      !!$('script[src*="video.js"]').length ||
+      !!$(".video-js").length,
+  },
+  {
+    name: "Plyr",
+    category: "Video Player",
+    confidence: 0.85,
+    test: ($) =>
+      !!$('link[href*="plyr"]').length ||
+      !!$('script[src*="plyr"]').length,
+  },
+  {
+    name: "HLS.js",
+    category: "Video Player",
+    confidence: 0.85,
+    test: ($) =>
+      !!$('script[src*="hls.js"]').length ||
+      !!$('script[src*="hlsjs"]').length,
+  },
+  {
+    name: "Dash.js",
+    category: "Video Player",
+    confidence: 0.85,
+    test: ($) => !!$('script[src*="dash.js"]').length,
+  },
+  {
+    name: "MediaElement.js",
+    category: "Video Player",
+    confidence: 0.8,
+    test: ($) =>
+      !!$('script[src*="mediaelement"]').length ||
+      !!$(".mejs-container").length,
+  },
   // Additional signal: known script/CDN hostnames in script or CSS URLs
 ];
 
